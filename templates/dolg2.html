@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="main">
+    <h1>Я должен</h1>
+    <p>Кому и за что</p>
+</div>
+{% endblock %}
+
+<script>
+    // Инициализация кнопки "Назад"
+    var BackButton = WebApp.BackButton;
+    
+    // Проверяем, доступна ли кнопка "Назад"
+    if (BackButton) {
+        // Показываем кнопку "Назад"
+        BackButton.show();
+    
+        // Обработчик события клика по кнопке "Назад"
+        BackButton.onClick(function() {
+            // Закрываем приложение Telegram Web App и возвращаем в Telegram
+            WebApp.close(); // Возвращает пользователя в Telegram
+    
+            // Либо можно показать предупреждение, если требуется
+            // WebApp.showAlert("Вы покидаете приложение.");
+        });
+    
+        // Также можно обработать событие, когда кнопка "Назад" была нажата
+        WebApp.onEvent('backButtonClicked', function() {
+            // Дополнительные действия при нажатии на кнопку "Назад"
+            console.log('Кнопка назад была нажата!');
+        });
+    }
+    </script>

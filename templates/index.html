@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<style>
+    /* Стиль модального окна */
+    .modal {
+        display: none;  /* Скрыто по умолчанию */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4); /* Черный фон с прозрачностью */
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Стили для формы */
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    /* Для улучшения визуального восприятия */
+    .modal-content h2 {
+        margin-top: 0;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Создать событие{% endblock %}
+
+{% block content %}
+<div class="main">
+    <h1>Главная</h1>
+    <p>На этой странице вы найдете информацию о ваших событиях и долгах.</p>
+    <button id="createEventBtn">Создать событие</button>
+
+    <!-- Модальное окно для создания события -->
+    <div id="createEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Создать событие</h2>
+            <form id="createEventForm">
+                <label for="eventName">Название события:</label>
+                <input type="text" id="eventName" name="eventName" required>
+                <button type="submit">Создать</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // Получаем элементы
+    var modal = document.getElementById("createEventModal");
+    var btn = document.getElementById("createEventBtn");
+    var span = document.getElementsByClassName("close")[0];
+    var form = document.getElementById("createEventForm");
+
+    // Открытие модального окна
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Закрытие модального окна
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Закрытие модального окна, если кликнуть за его пределами
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Отправка формы
+    form.onsubmit = function(event) {
+        event.preventDefault();
+
+        // Сбор данных из формы
+        var eventName = document.getElementById("eventName").value;
+
+        // Проверка на пустое поле
+        if (!eventName.trim()) {
+            alert('Название события не может быть пустым.');
+            return;
+        }
+
+        // Отправка данных на сервер
+        fetch('/create_event', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                telegram_id: 12345,  // Замените на реальный Telegram ID пользователя
+                event_name: eventName
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert('Событие успешно создано!');
+                modal.style.display = "none"; // Закрыть модальное окно
+            } else {
+                alert('Произошла ошибка: ' + (data.error || 'Неизвестная ошибка'));
+            }
+        })
+        .catch(error => {
+            alert('Ошибка при отправке данных: ' + error);
+        });
+    }
+</script>
+{% endblock %}

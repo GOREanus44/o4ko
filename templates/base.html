@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+    {% block styles %}
+    {% endblock %}
+    <title>{% block title %}Мое приложение{% endblock %}</title>
+</head>
+<body>
+<header>
+    <div class="navbar">
+        <a href="/">События</a>
+        <a href="/dolg">Мой долг</a>
+        <a href="/dolg2">Мне должны</a>
+    </div>
+</header>
+<main>
+{% block content %}
+{% endblock %}
+</main>
+<footer>
+    <p>© 2024 by ТЕХНО БУСЫ</p>
+</footer>
+{% block js %}
+{% endblock %}
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+
+</body>
+</html>
